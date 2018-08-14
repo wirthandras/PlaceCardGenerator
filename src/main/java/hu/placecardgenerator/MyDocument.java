@@ -15,25 +15,22 @@ import org.apache.pdfbox.pdmodel.graphics.image.PDImageXObject;
 
 public class MyDocument {
 
-	private static float realMargin = 5;
-	private static final float w = 210;
+	private static float realMargin = 0;
 
 	// private static final Color c = new Color(228, 218, 217);
 	private static final Color c = new Color(44, 84, 45);
-	private static final Color bordo = new Color(108, 5, 25);
 
 	private static float width = PDRectangle.A4.getWidth();
+	private static float height = PDRectangle.A4.getHeight();
 
 	private static final int numberOfCol = 2;
 	private static final int numberOfRow = 3;
 
-	private static final float fontSize = 30;
+	private static final int fontSize = 40;
 	private static final float offsetLeft = 100;
 	private static final float offsetRight = 40;
 
 	private static final float verticalOffset = 30;
-
-	private float wScale = width / w;
 
 	private PDDocument doc = new PDDocument();
 	private List<String> nameList;
@@ -47,10 +44,7 @@ public class MyDocument {
 
 	public PDDocument getDoc() throws Exception {
 
-		float margin = realMargin * wScale;
-
-		float width = 2 * margin;
-		float height = 2 * margin;
+		float margin = realMargin;
 		float startPoint = margin;
 
 		float widthPart = width / numberOfCol;
@@ -61,7 +55,7 @@ public class MyDocument {
 
 		PDImageXObject ximageBase = PDImageXObject.createFromFile(imageName, doc);
 
-		float div = nameList.size() / 6.0f;
+		float div = nameList.size() / new Float(numberOfCol * numberOfRow);
 		double ceil = Math.ceil(div);
 		int pageNumber = ((Double) ceil).intValue();
 		int counter = 0;
@@ -77,7 +71,7 @@ public class MyDocument {
 					if (counter < nameList.size()) {
 						float posX = startPoint + i * widthPart;
 						float posY = startPoint + j * heightPart;
-						Card card = new Card(font, ximageBase, nameList.get(counter), posX, posY, cos, width, height);
+						Card card = new Card(font, ximageBase, nameList.get(counter), posX, posY, cos, widthPart, heightPart, fontSize);
 						card.draw();
 						counter++;
 					}
