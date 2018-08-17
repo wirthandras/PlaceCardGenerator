@@ -1,7 +1,5 @@
 package hu.placecardgenerator;
 
-import java.awt.Rectangle;
-import java.awt.geom.Rectangle2D;
 import java.io.IOException;
 
 import org.apache.pdfbox.pdmodel.PDPageContentStream;
@@ -13,9 +11,11 @@ import org.apache.pdfbox.util.Matrix;
 
 public class Card {
 
+	private static final int FONT_SIZE_MULTIPLIER = 1000;
 	private static final int ROTATION_180_DEGREE = 180;
 
 	private static PDColor black = new PDColor(new float[] { 1.0f, 1.0f, 1.0f }, PDDeviceRGB.INSTANCE);
+	private static PDColor red = new PDColor(new float[] { 0.0f, 1.0f, 1.0f }, PDDeviceRGB.INSTANCE);
 
 	private PDFont font;
 	private PDImageXObject bgImage;
@@ -25,11 +25,12 @@ public class Card {
 	private PDPageContentStream cos;
 	private float width;
 	private float height;
-	
+
 	private float centerLowerX;
 	private float centerLowerY;
 	private float textWidth;
 	private int fontSize;
+	private float fontHeight;
 
 	public Card(PDFont font, PDImageXObject bgImage, String name, float x, float y, PDPageContentStream cos,
 			float width, float height, int fontSize) throws IOException {
@@ -43,39 +44,43 @@ public class Card {
 		this.width = width;
 		this.height = height;
 		this.fontSize = fontSize;
-		
-		this.centerLowerX = width / 2;
-		this.centerLowerY = height / 3;
-		this.textWidth = font.getStringWidth(name) / 1000 * fontSize;
+
+		this.centerLowerX = getHalf(width);
+		this.centerLowerY = getHalf(getHalf(height));
+		this.textWidth = font.getStringWidth(this.name) / FONT_SIZE_MULTIPLIER * fontSize;
+		this.fontHeight = font.getFontDescriptor().getCapHeight() / FONT_SIZE_MULTIPLIER * fontSize;
 	}
 
 	public void draw() throws IOException {
 		drawImage();
-		drawText();
-		drawRotatedText();
+		drawText(centerLowerX, centerLowerY, false);
+		drawText(centerLowerX, 3 * centerLowerY, true);
 		drawLines();
 	}
-
-	private void drawText() throws IOException {		
-		cos.beginText();
-		cos.setFont(font, fontSize);
-		cos.setNonStrokingColor(black);
-		cos.newLineAtOffset(x + centerLowerX - textWidth / 2, y + centerLowerY);
-		cos.showText(name);
-		cos.endText();
+	
+	private float getHalf(float value) {
+		return value / 2;
 	}
 
-	private void drawRotatedText() throws IOException {
+	private void drawText(float centerX, float centerY, boolean isRotated) throws IOException {
+
+		float posX = x + centerX - getHalf(textWidth);
+		float posY = y + centerY - getHalf(fontHeight);
+
 		cos.beginText();
+		if (isRotated) {
+			posX = x + centerX + getHalf(textWidth);
+			posY = y + centerY + getHalf(fontHeight);
+		}
+		cos.newLineAtOffset(posX, posY);
+		if (isRotated) {
+			Matrix m = Matrix.getRotateInstance(Math.toRadians(ROTATION_180_DEGREE), posX, posY);
+			cos.setTextMatrix(m);
+		}
 		cos.setFont(font, fontSize);
 		cos.setNonStrokingColor(black);
-		float posX = x + centerLowerX + textWidth / 2;
-		float posY = y + centerLowerY;
-		cos.newLineAtOffset(posX, posY);
-		Matrix m = Matrix.getRotateInstance(Math.toRadians(ROTATION_180_DEGREE), posX, posY);
-		cos.setTextMatrix(m);
+
 		cos.showText(name);
-		cos.setTextMatrix(Matrix.getRotateInstance(Math.toRadians(-ROTATION_180_DEGREE), x - textWidth / 2, x));
 		cos.endText();
 	}
 
@@ -84,13 +89,13 @@ public class Card {
 	}
 
 	private void drawLines() throws IOException {
-		cos.setStrokingColor(black);
-		cos.setNonStrokingColor(black);
+		cos.setStrokingColor(red);
+		cos.setNonStrokingColor(red);
 
 		// vizszintes vonal
 		cos.setLineDashPattern(new float[] { 3 }, 0);
-		cos.moveTo(x, y);
-		cos.lineTo(x + width, y + height);
+		cos.moveTo(x, y + centerLowerY);
+		cos.lineTo(x + width, y + centerLowerY);
 		cos.setLineDashPattern(new float[] { 0 }, 0);
 	}
 
