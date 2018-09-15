@@ -1,4 +1,4 @@
-package hu.placecardgenerator;
+package hu.placecardgenerator.domain;
 
 import java.awt.Color;
 import java.io.File;
@@ -13,7 +13,7 @@ import org.apache.pdfbox.pdmodel.font.PDFont;
 import org.apache.pdfbox.pdmodel.font.PDType1Font;
 import org.apache.pdfbox.pdmodel.graphics.image.PDImageXObject;
 
-public class MyDocument {
+public class PlaceCardDocument extends PDDocument {
 
 	private static float realMargin = 0;
 
@@ -32,13 +32,12 @@ public class MyDocument {
 
 	private static final float verticalOffset = 30;
 
-	private PDDocument doc = new PDDocument();
 	private List<String> nameList;
 
 	private String imageName = "src/main/resources/test.png";
 	private String fontFileName = "ArchitectsDaughter.ttf";
 
-	public MyDocument(List<String> names) {
+	public PlaceCardDocument(List<String> names) {
 		this.nameList = names;
 	}
 
@@ -53,7 +52,7 @@ public class MyDocument {
 		File fontFile = new File(fontFileName);
 		PDFont font = PDType1Font.HELVETICA;
 
-		PDImageXObject ximageBase = PDImageXObject.createFromFile(imageName, doc);
+		PDImageXObject ximageBase = PDImageXObject.createFromFile(imageName, this);
 
 		float div = nameList.size() / new Float(numberOfCol * numberOfRow);
 		double ceil = Math.ceil(div);
@@ -63,7 +62,7 @@ public class MyDocument {
 		for (int p = 0; p < pageNumber; p++) {
 			PDPage page = new PDPage(PDRectangle.A4);
 
-			PDPageContentStream cos = new PDPageContentStream(doc, page);
+			PDPageContentStream cos = new PDPageContentStream(this, page);
 
 			for (int i = 0; i < numberOfCol; i++) {
 
@@ -79,9 +78,9 @@ public class MyDocument {
 
 			}
 			cos.close();
-			doc.addPage(page);
+			this.addPage(page);
 		}
-		return doc;
+		return this;
 	}
 
 }

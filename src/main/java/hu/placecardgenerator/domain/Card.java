@@ -1,4 +1,4 @@
-package hu.placecardgenerator;
+package hu.placecardgenerator.domain;
 
 import java.io.IOException;
 

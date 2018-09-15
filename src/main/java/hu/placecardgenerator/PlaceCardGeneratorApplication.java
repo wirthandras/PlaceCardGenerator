@@ -14,8 +14,10 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
+import hu.placecardgenerator.domain.PlaceCardDocument;
+
 @SpringBootApplication
-public class PlaceCardGeneratorApplication implements CommandLineRunner {
+public class PlaceCardGeneratorApplication {
 
 	public static final String pdfExtension = ".pdf";
 
@@ -23,21 +25,23 @@ public class PlaceCardGeneratorApplication implements CommandLineRunner {
 		SpringApplication.run(PlaceCardGeneratorApplication.class, args);
 	}
 
-	@Override
-	public void run(String... args) throws Exception {
-
-		List<String> names = getNames();
-
-		PDDocument doc = new MyDocument(names).getDoc();
-		String filename = "ultetesSalamonV1";
-
-		save(doc, filename);
-	}
+//	@Override
+//	public void run(String... args) throws Exception {
+//
+//		List<String> names = getNames();
+//
+//		PDDocument doc = new PlaceCardDocument(names).getDoc();
+//		String filename = "ultetesSalamonV1";
+//
+//		save(doc, filename);
+//		doc.close();
+//	}
 
 	private static void save(PDDocument doc, String filename) {
 		try {
 
 			doc.save(filename + pdfExtension);
+			
 			doc.close();
 		} catch (Exception io) {
 			System.out.println(io);
