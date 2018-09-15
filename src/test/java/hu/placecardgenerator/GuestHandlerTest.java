@@ -1,5 +1,7 @@
 package hu.placecardgenerator;
 
+import java.util.Queue;
+
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -29,10 +31,12 @@ public class GuestHandlerTest {
 		gh.add("Ben");
 		gh.add("Joshua");
 		
-		Assert.assertNotNull(gh.getNext(2));
-		Assert.assertEquals(2, gh.getNext(2).size());
-		Assert.assertEquals("Joe", gh.getNext(2).poll());
-		Assert.assertEquals("Rebeka", gh.getNext(2).poll());
+		Queue<String> queue = gh.getNext(2);
+		
+		Assert.assertNotNull(queue);
+		Assert.assertEquals(2, queue.size());
+		Assert.assertEquals("Joe", queue.poll());
+		Assert.assertEquals("Rebeka", queue.poll());
 	}
 	
 	@Test
@@ -42,8 +46,10 @@ public class GuestHandlerTest {
 		gh.add("Ben");
 		gh.add("Joshua");
 		
-		Assert.assertNotNull(gh.getNext(6));
-		Assert.assertEquals(4, gh.getNext(6).size());
+		Queue<String> queue = gh.getNext(6); 
+		
+		Assert.assertNotNull(queue);
+		Assert.assertEquals(4, queue.size());
 	}
 	
 }
