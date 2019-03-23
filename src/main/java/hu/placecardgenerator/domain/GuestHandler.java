@@ -26,13 +26,14 @@ public class GuestHandler {
 	public void load(File file) throws IOException {
 		guests = new ArrayList<String>();
 
-		BufferedReader br = new BufferedReader(
-				new InputStreamReader(new FileInputStream(file), StandardCharsets.UTF_8));
-		String line;
-		while ((line = br.readLine()) != null) {
-			guests.add(line);
+		try (BufferedReader br = new BufferedReader(
+				new InputStreamReader(new FileInputStream(file), StandardCharsets.UTF_8))) {
+			String line;
+			while ((line = br.readLine()) != null) {
+				guests.add(line);
+			}
 		}
-		br.close();
+
 	}
 
 	/**
@@ -47,7 +48,7 @@ public class GuestHandler {
 		remove(result);
 		return result;
 	}
-	
+
 	private Queue<String> getNextInternal(int count) {
 		if (guests.size() > 0) {
 			int res = Math.min(count, guests.size());
@@ -56,7 +57,7 @@ public class GuestHandler {
 			return new ArrayDeque<String>();
 		}
 	}
-	
+
 	private boolean remove(Queue<String> c) {
 		return guests.removeAll(c);
 	}
