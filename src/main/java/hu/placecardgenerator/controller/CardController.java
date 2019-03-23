@@ -12,25 +12,24 @@ import javax.servlet.http.HttpServletResponse;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.FileCopyUtils;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 @Controller
 public class CardController {
 
-	@RequestMapping(value = "/")
+	@GetMapping("/")
 	public String index(Model model) {
 		return "cards";
 	}
 
-	@RequestMapping(value = "cards")
+	@GetMapping("cards")
 	public String card(Model model) {
 		model.addAttribute("pageTitle", "Cards");
 		return "cards";
 	}
 
-	@RequestMapping(value = "/getpdf", method = RequestMethod.GET)
+	@GetMapping("/getpdf")
 	@ResponseBody
 	public void getPDF1(HttpServletResponse response) throws IOException {
 		File file = new File("ultetesSalamonV1.pdf");
