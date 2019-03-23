@@ -1,9 +1,6 @@
 package hu.placecardgenerator.domain;
 
 import java.io.File;
-import java.util.ArrayDeque;
-import java.util.List;
-import java.util.Queue;
 
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDPage;
@@ -47,7 +44,7 @@ public class PlaceCardDocument extends PDDocument {
 
 		PDImageXObject ximageBase = PDImageXObject.createFromFile(imageName, this);
 
-		float div = guestHandler.size() / new Float(numberOfCol * numberOfRow);
+		float div = guestHandler.size() / (float)(numberOfCol * numberOfRow);
 		double ceil = Math.ceil(div);
 		int pageNumber = ((Double) ceil).intValue();
 
