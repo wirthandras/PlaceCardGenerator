@@ -47,7 +47,7 @@ public class CardController {
 		response.setContentLength((int) file.length());
 		
 		try (InputStream inputStream = new FileInputStream(file)) {
-			FileCopyUtils.copy(new FileInputStream(file), response.getOutputStream());
+			FileCopyUtils.copy(inputStream, response.getOutputStream());
 		}
 	}
 }
